@@ -29,6 +29,7 @@
           - network-manager
           - dbus
           - wget
+          - debconf-utils
       become: true
 
   #    - name: docker is installed
@@ -53,6 +54,13 @@
       ansible.builtin.apt:
         deb: "https://github.com/home-assistant/os-agent/releases/download/1.2.2/os-agent_1.2.2_linux_aarch64.deb"
       become: true
+
+    - name: home assistant installation questions are seeded into debconf
+      ansible.builtin.debconf:
+        name: homeassistant-supervised
+        question: ha/machine-type
+        value: raspberrypi4-64
+        vtype: multiselect
 
     - name: home assistant is installed
       ansible.builtin.apt:
