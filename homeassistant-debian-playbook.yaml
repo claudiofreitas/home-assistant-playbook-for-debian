@@ -1,0 +1,61 @@
+---
+
+- name: Install home assistant supervised in a debian os with minimal pre-requisites
+  hosts: all
+
+  tasks:
+    - name: apt-get is updated
+      ansible.builtin.apt: 
+        update_cache: true
+        force_apt_get: true
+        cache_valid_time: 3600
+      become: true
+
+    - name: apt-get is upgraded
+      ansible.builtin.apt: 
+        upgrade: dist
+        force_apt_get: true
+      become: true
+
+    - name: necessary programs are installed
+      ansible.builtin.apt:
+        name:
+          - jq
+          - curl
+          - avahi-daemon
+          - apparmor-utils
+          - udisks2
+          - libglib2.0-bin
+          - network-manager
+          - dbus
+          - wget
+      become: true
+
+  #    - name: docker is installed
+  #      ansible.builtin.command:
+  #        cmd: curl -fsSL get.docker.com | sh
+
+    - name: pip3 is installed (requisite for docker-compose)
+      ansible.builtin.include_role:
+        name: geerlingguy.pip
+        apply:
+          become: true
+      vars:
+        pip_package: python3-pip
+
+    - name: docker is installed
+      ansible.builtin.include_role: 
+        name: geerlingguy.docker_arm
+        apply:
+          become: false
+
+    - name: os-agent is installed
+      ansible.builtin.apt:
+        deb: "https://github.com/home-assistant/os-agent/releases/download/1.2.2/os-agent_1.2.2_linux_aarch64.deb"
+      become: true
+
+    - name: home assistant is installed
+      ansible.builtin.apt:
+        deb: "https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb"
+      become: true
+

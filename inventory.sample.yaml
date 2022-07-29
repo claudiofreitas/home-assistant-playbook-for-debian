@@ -1,0 +1,9 @@
+---
+all:
+  hosts:
+
+    # replace your pi ip below
+    192.168.1.10000:
+      # replace your user on 'your_user_here'
+      ansible_user: your_user_here
+
