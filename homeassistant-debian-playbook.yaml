@@ -48,7 +48,7 @@
       ansible.builtin.include_role: 
         name: geerlingguy.docker_arm
         apply:
-          become: false
+          become: true
 
     - name: os-agent is installed
       ansible.builtin.apt:
@@ -61,6 +61,7 @@
         question: ha/machine-type
         value: raspberrypi4-64
         vtype: multiselect
+      become: true
 
     - name: home assistant is installed
       ansible.builtin.apt:
